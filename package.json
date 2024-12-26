@@ -1,0 +1,25 @@
+{
+  "name": "checkin-manager-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/server.js",
+    "dev": "nodemon - exec 'ts-node' src/server.ts"
+  },
+  "keywords": [],
+  "author": "Ioana Dumitrescu",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9",
+    "save-dev": "^0.0.1-security",
+    "ts-node": "^10.9.2"
+  }
+}
