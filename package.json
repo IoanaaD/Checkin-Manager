@@ -17,7 +17,9 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "mongoose": "^8.9.3",
     "nodemon": "^3.1.9",
     "save-dev": "^0.0.1-security",
     "ts-node": "^10.9.2"
