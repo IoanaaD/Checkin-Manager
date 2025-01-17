@@ -2,6 +2,48 @@
 import { Request, Response } from 'express'
 import UserProfile, { IUserProfile } from '../models/UserProfile'
 import encryptPassword from '../utils/hashing'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config();
+
+//login user
+export const loginUser = async(req:Request, res: Response): Promise<void> => {
+    try {
+        const user = req.body;
+        const { email, password } = user
+        const existingUser = await UserProfile.findOne({email: email })
+        if(!existingUser) {
+             res.status(404).json({
+                success: false,
+                message: "User not found!"
+            })
+            return;
+        }
+
+        const isPasswordMatching = await bcrypt.compare(password, existingUser.password)
+        if(!isPasswordMatching) {
+             res.status(401).json({
+                success: false,
+                message: "Incorrect password!"
+            })
+            return
+        }
+
+        const secret = process.env.JWT_SECRET
+        const token = jwt.sign({id:existingUser._id}, `${secret}`, {expiresIn: "1d"})
+
+        res.status(200).json({
+            success: true,
+            token,
+            message: "User logged in!"
+        })
+        return
+    } catch(error: any) {
+         res.status(500).json({ message: 'Error logging in', error: error.message });
+         return
+    }
+}
 
 //get all users
 export const getAllUsers = async (req: Request,res: Response) => {
@@ -56,6 +98,9 @@ export const registerUSer = async(req: Request, res: Response) => {
 export const editUser = async(req: Request, res: Response) => {
     try {
         const {id} = req.params;
+        if(req.body.password) {
+            req.body.password = await encryptPassword(req.body.password)
+        }
         await UserProfile.updateOne({_id:id}, req.body)
         const updatedUser = await UserProfile.findById(id);
         res.status(200).json(updatedUser)
