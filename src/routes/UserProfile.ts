@@ -2,9 +2,9 @@ import express from 'express'
 import { validateData } from '../middleware/validationMiddleware'
 import { auth } from '../middleware/authMiddleware'
 import { userRegisterSchema, userLoginSchema, userUpdateSchema } from '../schemas/UserProfileSchemas'
+import { getAllUsers, getOneUser, registerUSer, editUser, deleteUser, loginUser } from '../controllers/userController'
 
 const userRouter = express.Router()
-import { getAllUsers, getOneUser, registerUSer, editUser, deleteUser, loginUser } from '../controllers/userController'
 
 userRouter.get("/api/user-profile", getAllUsers)
 userRouter.get("/api/user-profile/:id", getOneUser)

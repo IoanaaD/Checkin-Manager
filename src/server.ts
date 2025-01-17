@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import userRouter from './routes/UserProfile'
 import bodyParser from 'body-parser'
+import subscriptionPlanRouter from './routes/SubscriptionPlan'
 dotenv.config();
 
 const app = express()
@@ -14,7 +15,7 @@ mongoose.connect(`${process.env.DB_CONN_STRING}`, {
   .catch((err) => console.error('MongoDB connection error:', err));
 
 app.use(bodyParser.json())
-app.use('/', userRouter)
+app.use('/', userRouter, subscriptionPlanRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
