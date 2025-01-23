@@ -4,7 +4,6 @@ import SubscriptionPlan from "../models/SubscriptionPlan"
 //create a subccriptionPlan, only admins
 export const createSubscriptionPlan = async(req: Request, res: Response) => {
     try {
-        console.log("TEST", req.body)
         const newSubscriptionPlan = new SubscriptionPlan({...req.body})
         const createdSubscriptionPlan = await newSubscriptionPlan.save()
         res.status(201).json({

@@ -14,7 +14,7 @@ export const loginUser = async(req:Request, res: Response): Promise<void> => {
         const { email, password } = user
         const existingUser = await UserProfile.findOne({email: email })
         if(!existingUser) {
-             res.status(404).json({
+             res.status(401).json({
                 success: false,
                 message: "User not found!"
             })
@@ -30,8 +30,8 @@ export const loginUser = async(req:Request, res: Response): Promise<void> => {
             return
         }
 
-        const secret = process.env.JWT_SECRET
-        const token = jwt.sign({id:existingUser._id}, `${secret}`, {expiresIn: "1d"})
+        const secret = process.env.JWT_SECRET!
+        const token = jwt.sign({id:existingUser._id}, secret, {expiresIn: "1d"})
 
         res.status(200).json({
             success: true,
@@ -98,12 +98,19 @@ export const registerUSer = async(req: Request, res: Response) => {
 export const editUser = async(req: Request, res: Response) => {
     try {
         const {id} = req.params;
-        if(req.body.password) {
-            req.body.password = await encryptPassword(req.body.password)
+        const decodedInfo = (req as any).user
+        if(decodedInfo.id!=id) {
+            res.status(500).json({
+                message: "Not allowed to edit this user"
+            })
+        } else {
+            if(req.body.password) {
+                req.body.password = await encryptPassword(req.body.password)
+            }
+            await UserProfile.updateOne({_id:id}, req.body)
+            const updatedUser = await UserProfile.findById(id);
+            res.status(200).json(updatedUser)
         }
-        await UserProfile.updateOne({_id:id}, req.body)
-        const updatedUser = await UserProfile.findById(id);
-        res.status(200).json(updatedUser)
     } catch (error:any) {
         res.status(500).json({
             message: "Error updating user",
