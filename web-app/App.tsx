@@ -1,10 +1,13 @@
-import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import Login from "./components/Login";
+
+const queryClient = new QueryClient();
 
 const App = () =>{
     return (
-        <h1>
-            Created A React App From Scratch! x
-        </h1>
+        <QueryClientProvider client={queryClient}>
+            <Login></Login>
+        </QueryClientProvider>
     )
 }
 
