@@ -5,6 +5,7 @@ import encryptPassword from '../utils/hashing'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+
 dotenv.config();
 
 //login user
@@ -34,9 +35,11 @@ export const loginUser = async(req:Request, res: Response): Promise<void> => {
         const token = jwt.sign({id:existingUser._id}, secret, {expiresIn: "1d"})
 
         res.status(200).json({
-            success: true,
             token,
-            message: "User logged in!"
+            userInfo: {
+                email: existingUser.email,
+                id: existingUser._id
+            }
         })
         return
     } catch(error: any) {

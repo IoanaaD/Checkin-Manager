@@ -1,8 +1,10 @@
 import { Text, Flex, Input, Button, Stack } from '@chakra-ui/react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { useAppSelector, useAppDispatch } from '../redux/hooks'
+import { login } from '../redux/userSlice'
 
 type FormFields = {
   email: string,
@@ -27,11 +29,13 @@ const loginUser = async (data: FormFields) => {
   }
 
   const result = await response.json()
+  console.log("LOGIN RESULT", result)
   return result;
 }
 
 const Login = () => {
   const [successMessage, setSuccessMessage] = useState("")
+  const dispatch = useAppDispatch()
   const { register, handleSubmit, setError, formState: {errors, isSubmitting} } = useForm<FormFields>()
   const {mutateAsync} = useMutation({
     mutationFn: loginUser,
@@ -45,9 +49,8 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
-     
       const response = await mutateAsync(data);
-      console.log(data)
+      dispatch(login({token: response.token, userInfo:{ id: response.userInfo.id, email: response.userInfo.email}}))
       console.log("User logged in: ", response)
     } catch (error: any) {
       setError("root", {
