@@ -2,6 +2,7 @@ import { Text, Flex, Input, Button, Stack } from '@chakra-ui/react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 
 type FormFields = {
   email: string,
@@ -79,17 +80,14 @@ const Login = () => {
         {errors.email && <Text color="red">{errors.email.message}</Text>}
         <Input {...register("password", {
           required: "Password is required!",
-          minLength: {
-            value: 8,
-            message: "Password must have at least 8 characters!"
-          }
         })} placeholder="Password" type='password' variant="flushed" />
         {errors.password && <Text color='red'>{errors.password.message}</Text>}
         <Button disabled={isSubmitting} type="submit">
           {isSubmitting ? "Loading..." : "Submit"}
         </Button>
         {errors.root && <Text color="red">{errors.root.message}</Text>}
-        {successMessage && <Text color="green">{successMessage}</Text>}     
+        {successMessage && <Text color="green">{successMessage}</Text>}   
+        <Text>Don t have an account? <Link to="/register">Create one here!</Link></Text>  
         </Stack>
       </form>
     </Flex>
